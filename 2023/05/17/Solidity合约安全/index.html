@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Solidity合约安全 | NeWive&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="重入合约 (A) 与另一个合约 (B) 的任何交互以及以太币的任何转移都会将控制权移交给该合约 (B)。这使得 B 可以在此交互完成之前回调 A。 123456789101112&#x2F;&#x2F; SPDX-License-Identifier: GPL-3.0pragma solidity &gt;&#x3D;0.6.0 &lt;0.9.0;&#x2F;&#x2F; 包含bug的合约contract Fund &amp;#123;    mapp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Solidity合约安全">
+<meta property="og:url" content="https://newive.github.io/2023/05/17/Solidity%E5%90%88%E7%BA%A6%E5%AE%89%E5%85%A8/index.html">
+<meta property="og:site_name" content="NeWive&#39;s Blog">
+<meta property="og:description" content="重入合约 (A) 与另一个合约 (B) 的任何交互以及以太币的任何转移都会将控制权移交给该合约 (B)。这使得 B 可以在此交互完成之前回调 A。 123456789101112&#x2F;&#x2F; SPDX-License-Identifier: GPL-3.0pragma solidity &gt;&#x3D;0.6.0 &lt;0.9.0;&#x2F;&#x2F; 包含bug的合约contract Fund &amp;#123;    mapp">
+<meta property="og:locale">
+<meta property="article:published_time" content="2023-05-17T02:13:49.000Z">
+<meta property="article:modified_time" content="2023-05-17T04:52:03.532Z">
+<meta property="article:author" content="NeWive">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="Smart Contract">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="NeWive's Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">NeWive&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">NeWive的鸽子窝</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Suche"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://newive.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Solidity合约安全" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/05/17/Solidity%E5%90%88%E7%BA%A6%E5%AE%89%E5%85%A8/" class="article-date">
+  <time class="dt-published" datetime="2023-05-17T02:13:49.000Z" itemprop="datePublished">2023-05-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Solidity合约安全
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="重入"><a href="#重入" class="headerlink" title="重入"></a>重入</h2><p>合约 (A) 与另一个合约 (B) 的任何交互以及以太币的任何转移都会将控制权移交给该合约 (B)。这使得 B 可以在此交互完成之前回调 A。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: GPL-3.0</span><br><span class="line">pragma solidity &gt;=0.6.0 &lt;0.9.0;</span><br><span class="line"></span><br><span class="line">// 包含bug的合约</span><br><span class="line">contract Fund &#123;</span><br><span class="line">    mapping(address =&gt; uint) shares;</span><br><span class="line">    </span><br><span class="line">    function withdraw() public &#123;</span><br><span class="line">        if (payable(msg.sender).send(shares[msg.sender]))</span><br><span class="line">            shares[msg.sender] = 0;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Ether 传输总是可以包括代码执行，因此接收者可以是一个调用撤回的合约。</p>
+<p>上述代码造成的危害较小，因为send对gas消耗的限制。但如果使用call则会使攻击者获取多次退款，因为call默认会转发所有gas。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: GPL-3.0</span><br><span class="line">pragma solidity &gt;=0.6.2 &lt;0.9.0;</span><br><span class="line"></span><br><span class="line">contract Fund &#123;</span><br><span class="line">    mapping(address =&gt; uint) shares;</span><br><span class="line"></span><br><span class="line">    function withdraw() public &#123;</span><br><span class="line">        (bool success,) = msg.sender.call&#123;value: shares[msg.sender]&#125;(&quot;&quot;);</span><br><span class="line">        if (success)</span><br><span class="line">            shares[msg.sender] = 0;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述代码中攻击者可以回调发送合同的函数，因而可以多次调用withdraw而在call未执行完时shares不会更新，从而实现hack的目的。</p>
+<h3 id="解决方案："><a href="#解决方案：" class="headerlink" title="解决方案："></a>解决方案：</h3><ul>
+<li>优先更新shares</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: GPL-3.0</span><br><span class="line">pragma solidity &gt;=0.6.0 &lt;0.9.0;</span><br><span class="line"></span><br><span class="line">contract Fund &#123;</span><br><span class="line"></span><br><span class="line">    mapping(address =&gt; uint) shares;</span><br><span class="line"></span><br><span class="line">    function withdraw() public &#123;</span><br><span class="line">        uint share = shares[msg.sender];</span><br><span class="line">        shares[msg.sender] = 0;</span><br><span class="line">        payable(msg.sender).transfer(share);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>将withdraw的过程整合为一个原子操作，加锁</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">contract Locker &#123;</span><br><span class="line">    bool private locked = false;</span><br><span class="line"></span><br><span class="line">    modifier lock() &#123;</span><br><span class="line">        require(</span><br><span class="line">            !locked,</span><br><span class="line">            &quot;Reentrant call.&quot;</span><br><span class="line">        );</span><br><span class="line">        locked = true;</span><br><span class="line">        _;</span><br><span class="line">        locked = false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract Fund is Locker &#123;</span><br><span class="line"></span><br><span class="line">    mapping(address =&gt; uint) shares;</span><br><span class="line"></span><br><span class="line">    function withdraw() public lock &#123;</span><br><span class="line">        uint share = shares[msg.sender];</span><br><span class="line">        shares[msg.sender] = 0;</span><br><span class="line">        payable(msg.sender).transfer(share);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是上锁之后不会对后续请求进行排队。</p>
+<h2 id="循环与gas限制"><a href="#循环与gas限制" class="headerlink" title="循环与gas限制"></a>循环与gas限制</h2><p>如果循环的结束条件是根据变量决定的，则循环次数不确定，有可能导致消耗过量的gas。</p>
+<h2 id="发送和接收ether"><a href="#发送和接收ether" class="headerlink" title="发送和接收ether"></a>发送和接收ether</h2><p>如果一个合约在没有函数被调用的情况下接收ether，则receive或者fallback函数将被调用。如果合约中没有这两个函数的实现则ether将被拒绝。</p>
+<p>在调用上述两个函数的过程中，合约只能依靠当时可用的“gas 津贴”（2300 gas）。这个津贴不足以修改storage，为了确保能够在上述情况下顺利接受ether需要确保receive与fallback对gas的要求。</p>
+<p>尽可能使用最精确的单位来表示 Wei 数量，因为会丢失任何因缺乏精度而四舍五入的单位。</p>
+<h3 id="使用transfer时需要注意的内容"><a href="#使用transfer时需要注意的内容" class="headerlink" title="使用transfer时需要注意的内容"></a>使用transfer时需要注意的内容</h3><ul>
+<li>如果接收方是个合约则会调用它的receive或fallback函数，从而接收方可以回调发送方的函数</li>
+<li>发送ether会因为调用栈深度超过1024导致失败。可以考虑使用<code>send</code>避免这个问题并检查<code>send</code>的返回值。更好的处理方式时为自身添加一个可以退款的方式</li>
+</ul>
+<h2 id="返回值校验"><a href="#返回值校验" class="headerlink" title="返回值校验"></a>返回值校验</h2><p>调用外部合约函数时，有些函数调用失败不会抛出错误回滚交易而是返回 false，如果忘记检查函数返回值会导致误以为调用成功。</p>
+<p>例如：approve等方法就是不安全的，因此引入了safeApprove</p>
+<p>当使用call方法调用approve时，如果没有校验返回值，则即使失败，也不会抛出异常。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.8;</span><br><span class="line"></span><br><span class="line">contract ReturnValue &#123;</span><br><span class="line">  function callchecked(address callee) public &#123;</span><br><span class="line">    (bool success, ) = callee.call(&quot;&quot;);</span><br><span class="line">    require(success, &quot;call failed!&quot;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  function callnotchecked(address callee) public &#123;</span><br><span class="line">    // 未校验</span><br><span class="line">    (bool success, ) = callee.call(&quot;&quot;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="合约自杀式攻击"><a href="#合约自杀式攻击" class="headerlink" title="合约自杀式攻击"></a>合约自杀式攻击</h2><p>合约自杀时，会将合约自身持有的ether全部转入到指定地址之中。</p>
+<p>如果某个合约使用了balance方法来进行校验时，有可能会出现攻击漏洞。</p>
+<h3 id="案例："><a href="#案例：" class="headerlink" title="案例："></a>案例：</h3><p>规则如下：</p>
+<ul>
+<li>游戏的目标是成为第 7 个存入 1 个以太币的玩家。</li>
+<li>玩家一次只能存入 1 个以太币。</li>
+<li>获胜者将能够提取所有以太币。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.13;</span><br><span class="line"></span><br><span class="line">contract EtherGame &#123;</span><br><span class="line">    uint public targetAmount = 7 ether;</span><br><span class="line">    address public winner;</span><br><span class="line"></span><br><span class="line">    function deposit() public payable &#123;</span><br><span class="line">        require(msg.value,  &quot;You can only send 1 ether&quot;);</span><br><span class="line"></span><br><span class="line">        uint balance = address(this).balance;</span><br><span class="line">        require(balance &lt;= targetAmount, &quot;Game Over);</span><br><span class="line"></span><br><span class="line">        if(balance == targetAmount) &#123;</span><br><span class="line">            winner = msg.sender;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function claimReward() public &#123;</span><br><span class="line">        require(msg.sender == winner, &quot;Not Winner&quot;);</span><br><span class="line">        (bool sent, ) = msg.sender.call&#123;value: address(this).balance&#125;(&quot;&quot;);</span><br><span class="line">        require(sent, &quot;Failed to send ether&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract Attack &#123;</span><br><span class="line">    EtherGame etherGame;</span><br><span class="line"></span><br><span class="line">    constructor(EtherGame _etherGame) &#123;</span><br><span class="line">        etherGame = EtherGame(_etherGame);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function attack() public payable &#123;</span><br><span class="line">        // 不经过deposit使劲发送以太币使超过7个</span><br><span class="line"></span><br><span class="line">        //将address转化为payable</span><br><span class="line">        address payable addr = payable(address(etherGame));</span><br><span class="line">        selfdestruct(addr);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>过程：</p>
+<p>1.部署EtherGame<br>2. 玩家（比如爱丽丝和鲍勃）决定玩游戏，每人存入 1 个以太币。<br>3. 使用 EtherGame 地址部署攻击<br>4. 调用 Attack.attack 发送 5 个以太币。这会破坏游戏 没有人能成为赢家。</p>
+<p>解决方案：</p>
+<p>不使用balance进行校验。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.13;</span><br><span class="line"></span><br><span class="line">contract EtherGame &#123;</span><br><span class="line">    uint public targetAmount = 3 ether;</span><br><span class="line">    uint public balance;</span><br><span class="line">    address public winner;</span><br><span class="line"></span><br><span class="line">    function deposit() public payable &#123;</span><br><span class="line">        require(msg.value == 1 ether, &quot;You can only send 1 Ether&quot;);</span><br><span class="line"></span><br><span class="line">          // ！！通过状态变量来统计ether，此时即使合约自杀传入ether，也不会干扰条件判断逻辑！！</span><br><span class="line">        balance += msg.value;</span><br><span class="line"></span><br><span class="line">        require(balance &lt;= targetAmount, &quot;Game is over&quot;);</span><br><span class="line"></span><br><span class="line">        if (balance == targetAmount) &#123;</span><br><span class="line">            winner = msg.sender;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function claimReward() public &#123;</span><br><span class="line">        require(msg.sender == winner, &quot;Not winner&quot;);</span><br><span class="line"></span><br><span class="line">        (bool sent, ) = msg.sender.call&#123;value: balance&#125;(&quot;&quot;);</span><br><span class="line">        require(sent, &quot;Failed to send Ether&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="访问私有数据private-data"><a href="#访问私有数据private-data" class="headerlink" title="访问私有数据private data"></a>访问私有数据private data</h2><p>所有链上的数据都可以被访问；不要把任何敏感信息存储在链上</p>
+<p>private修饰符表示链上合约无法访问该数据，但是可以通过链下（读取slot的方式读取私有数据）</p>
+<p>&#x2F;&#x2F; TODO: 未看代码验证</p>
+<h2 id="tx-origin-攻击"><a href="#tx-origin-攻击" class="headerlink" title="tx.origin 攻击"></a><code>tx.origin</code> 攻击</h2><p>不要使用<code>tx.origin</code>进行鉴权。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: GPL-3.0</span><br><span class="line">pragma solidity &gt;=0.7.0 &lt;0.9.0;</span><br><span class="line"></span><br><span class="line">contract TxUserWallet &#123;</span><br><span class="line">    address owner;</span><br><span class="line"></span><br><span class="line">    constructor() &#123;</span><br><span class="line">        owner = msg.sender;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function transferTo(address payable dest, uint amount) public &#123;</span><br><span class="line">        require(tx.origin == owner);</span><br><span class="line">        dest.transfer(amount);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//现在有人欺骗你将以太币发送到这个攻击钱包的地址：</span><br><span class="line"></span><br><span class="line">interface TxUserWallet &#123;</span><br><span class="line">    function transferTo(address payable dest, uint amount) external;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract TxAttackWallet &#123;</span><br><span class="line">    address payable owner;</span><br><span class="line"></span><br><span class="line">    constructor() &#123;</span><br><span class="line">        owner = payable(msg.sender);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    receive() external payable &#123;</span><br><span class="line">        TxUserWallet(msg.sender).transferTo(owner, msg.sender.balance);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果钱包检查了<code>msg.sender</code>以获得授权，它将获得攻击钱包的地址，而不是所有者的地址。但是通过检查 tx.origin，它得到了启动交易的原始地址，这仍然是所有者的地址。</p>
+<h2 id="溢出"><a href="#溢出" class="headerlink" title="溢出"></a>溢出</h2><p>默认在checked模式下，溢出总是会回滚。如果无法避免溢出，则可能导致智能合约卡在某个状态。尝试使用<code>require</code>控制输入的范围。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://newive.github.io/2023/05/17/Solidity%E5%90%88%E7%BA%A6%E5%AE%89%E5%85%A8/" data-id="cli5d2ofy000v0ohk0mdpbcrn" data-title="Solidity合约安全" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Smart-Contract/" rel="tag">Smart Contract</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Solidity/" rel="tag">Solidity</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/05/17/Solidity%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          Solidity智能合约基本概念
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/05/17/Solidity%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">Solidity面向对象</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ERC721/" rel="tag">ERC721</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFT/" rel="tag">NFT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Smart-Contract/" rel="tag">Smart Contract</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Solidity/" rel="tag">Solidity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alchemy/" rel="tag">alchemy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hardhat/" rel="tag">hardhat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openzeppelin/" rel="tag">openzeppelin</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/solidity/" rel="tag">solidity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web3js/" rel="tag">web3js</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/ERC721/" style="font-size: 10px;">ERC721</a> <a href="/tags/NFT/" style="font-size: 13.33px;">NFT</a> <a href="/tags/Smart-Contract/" style="font-size: 20px;">Smart Contract</a> <a href="/tags/Solidity/" style="font-size: 16.67px;">Solidity</a> <a href="/tags/alchemy/" style="font-size: 10px;">alchemy</a> <a href="/tags/hardhat/" style="font-size: 13.33px;">hardhat</a> <a href="/tags/openzeppelin/" style="font-size: 10px;">openzeppelin</a> <a href="/tags/solidity/" style="font-size: 13.33px;">solidity</a> <a href="/tags/web3js/" style="font-size: 10px;">web3js</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/05/">May 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/05/27/Openzeppelin%E7%AC%94%E8%AE%B0/">Openzeppelin笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/27/Hardhat%E7%AC%94%E8%AE%B0/">Hardhat笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/25/ERC721%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E6%A0%B7%E4%BE%8B/">ERC721简易项目开发Demo</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/19/ERC721/">ERC721</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/17/Solidity%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">Solidity智能合约基本概念</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 NeWive<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

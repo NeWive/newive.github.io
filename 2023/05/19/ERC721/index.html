@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>ERC721 | NeWive&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="概述ERC-721是为NFT引入的标准。 非同质代币(NFT)是一种具有唯一性识别的代币 ，ERC-20 Token可以无限细分为10^18份，而ERC721的Token最小的单位为1，无法再分割。 由于ERC721代币具有唯一性，不可分割的特点，所以很容易和一些具体的物品关联起来，通过这样一个标准，可以更广泛的应用到实际场景中。 标准1234567891011121314151617181920">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ERC721">
+<meta property="og:url" content="https://newive.github.io/2023/05/19/ERC721/index.html">
+<meta property="og:site_name" content="NeWive&#39;s Blog">
+<meta property="og:description" content="概述ERC-721是为NFT引入的标准。 非同质代币(NFT)是一种具有唯一性识别的代币 ，ERC-20 Token可以无限细分为10^18份，而ERC721的Token最小的单位为1，无法再分割。 由于ERC721代币具有唯一性，不可分割的特点，所以很容易和一些具体的物品关联起来，通过这样一个标准，可以更广泛的应用到实际场景中。 标准1234567891011121314151617181920">
+<meta property="og:locale">
+<meta property="article:published_time" content="2023-05-19T02:58:32.000Z">
+<meta property="article:modified_time" content="2023-05-20T02:09:52.919Z">
+<meta property="article:author" content="NeWive">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="NFT">
+<meta property="article:tag" content="Smart Contract">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="NeWive's Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">NeWive&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">NeWive的鸽子窝</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Suche"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://newive.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-ERC721" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/05/19/ERC721/" class="article-date">
+  <time class="dt-published" datetime="2023-05-19T02:58:32.000Z" itemprop="datePublished">2023-05-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      ERC721
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>ERC-721是为NFT引入的标准。</p>
+<p>非同质代币(NFT)是一种具有唯一性识别的代币 ，ERC-20 Token可以无限细分为10^18份，而ERC721的Token最小的单位为1，无法再分割。</p>
+<p>由于ERC721代币具有唯一性，不可分割的特点，所以很容易和一些具体的物品关联起来，通过这样一个标准，可以更广泛的应用到实际场景中。</p>
+<h2 id="标准"><a href="#标准" class="headerlink" title="标准"></a>标准</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">interface ERC721 &#123;</span><br><span class="line">    // 当任何NFT所有权更改时都会触发此事件，包括创建(from = 0)时和销毁(to = 0)时，合约创建时除外</span><br><span class="line">    event Transfer(address indexed _from, address indexed _to, uint256 indexed _tokenId);</span><br><span class="line"></span><br><span class="line">    // 当更改或确认NFT的授权地址时触发。</span><br><span class="line">    // 零地址表示没有授权的地址。</span><br><span class="line">    // 发生 `Transfer` 事件时，同样表示该NFT的授权地址（如果有）被重置为“无”（零地址）。</span><br><span class="line">    event Approval(address indexed _owner, address indexed _approved, uint indexed _tokenId);</span><br><span class="line"></span><br><span class="line">    // 所有者启用或禁用操作员时触发。（操作员可管理所有者所持有的NFTs）</span><br><span class="line">    event ApprovalForAll(address indexed _owner, address indexed _operator, bool _approved);</span><br><span class="line"></span><br><span class="line">    // @notice 统计所持有的NFTs数量</span><br><span class="line">    // @dev NFT 不能分配给零地址，查询零地址同样会异常</span><br><span class="line">    // @param _owner ： 待查地址</span><br><span class="line">    // @return 返回数量，也许是0</span><br><span class="line">    function balanceOf(address _owner) external view returns (uint256);</span><br><span class="line"></span><br><span class="line">    // @notice 返回所有者</span><br><span class="line">    // @dev NFT 不能分配给零地址，查询零地址抛出异常</span><br><span class="line">    // @param _tokenId NFT 的id</span><br><span class="line">    // @return 返回所有者地址</span><br><span class="line">    function ownerOf(uint256 _tokenId) external view returns (address);</span><br><span class="line"></span><br><span class="line">    // @notice 将NFT的所有权从一个地址转移到另一个地址</span><br><span class="line">    // @dev 如果`msg.sender` 不是当前的所有者（或授权者）抛出异常</span><br><span class="line">    // 如果 `_from` 不是所有者、`_to` 是零地址、`_tokenId` 不是有效id 均抛出异常。</span><br><span class="line">    //  当转移完成时，函数检查  `_to` 是否是合约，如果是，调用 `_to`的 `onERC721Received` 并且检查返回值是否是 `0x150b7a02` (即：`bytes4(keccak256(&quot;onERC721Received(address,address,uint256,bytes)&quot;))`)  如果不是抛出异常。</span><br><span class="line">    // @param _from ：当前的所有者</span><br><span class="line">    // @param _to ：新的所有者</span><br><span class="line">    // @param _tokenId ：要转移的token id.</span><br><span class="line">    // @param data : 附加额外的参数（没有指定格式），传递给接收者。</span><br><span class="line">    function safeTransferFrom(address _from, address _to, uint256 _tokenId, bytes data) external payable;</span><br><span class="line"></span><br><span class="line">    // @notice 将NFT的所有权从一个地址转移到另一个地址，功能同上，不带data参数。</span><br><span class="line">    function safeTransferFrom(address _from, address _to, uint256 _tokenId) external payable;</span><br><span class="line"></span><br><span class="line">    // @notice 转移所有权 -- 调用者负责确认`_to`是否有能力接收NFTs，否则可能永久丢失。</span><br><span class="line">    // @dev 如果`msg.sender` 不是当前的所有者（或授权者、操作员）抛出异常</span><br><span class="line">    // 如果 `_from` 不是所有者、`_to` 是零地址、`_tokenId` 不是有效id 均抛出异常。</span><br><span class="line">    function transferFrom(address _from, address _to, uint256 _tokenId) external payable;</span><br><span class="line"></span><br><span class="line">    // @notice 更改或确认NFT的授权地址</span><br><span class="line">    // @dev 零地址表示没有授权的地址。</span><br><span class="line">    //  如果`msg.sender` 不是当前的所有者或操作员</span><br><span class="line">    // @param _approved 新授权的控制者</span><br><span class="line">    // @param _tokenId ： token id</span><br><span class="line">    function approve(address _approved, uint256 _tokenId) external payable;</span><br><span class="line"></span><br><span class="line">    // @notice 启用或禁用第三方（操作员）管理 `msg.sender` 所有资产</span><br><span class="line">    // @dev 触发 ApprovalForAll 事件，合约必须允许每个所有者可以有多个操作员。</span><br><span class="line">    // @param _operator 要添加到授权操作员列表中的地址</span><br><span class="line">    // @param _approved True 表示授权, false 表示撤销</span><br><span class="line">    function setApprovalForAll(address _operator, bool _approved) external;</span><br><span class="line"></span><br><span class="line">    // @notice 获取单个NFT的授权地址</span><br><span class="line">    // @dev 如果 `_tokenId` 无效，抛出异常。</span><br><span class="line">    // @param _tokenId ：  token id</span><br><span class="line">    // @return 返回授权地址， 零地址表示没有。</span><br><span class="line">    function getApproved(uint256 _tokenId) external view returns (address);</span><br><span class="line"></span><br><span class="line">    // @notice 查询一个地址是否是另一个地址的授权操作员</span><br><span class="line">    // @param _owner 所有者</span><br><span class="line">    // @param _operator 代表所有者的授权操作员</span><br><span class="line">    function isApprovedForAll(address _owner, address _operator) external view returns (bool);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="扩展接口"><a href="#扩展接口" class="headerlink" title="扩展接口"></a>扩展接口</h2><h3 id="接受安全转账接口"><a href="#接受安全转账接口" class="headerlink" title="接受安全转账接口"></a>接受安全转账接口</h3><p>如果合约（应用）要接受NFT的安全转账，则必须实现如下接口:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">interface ERC721TokenReceiver &#123;</span><br><span class="line">    // @notice 处理接收NFT</span><br><span class="line">    // @dev ERC721智能合约在`transfer`完成后，在接收这地址上调用这个函数。</span><br><span class="line">    // 函数可以通过revert 拒绝接收。返回非`0x150b7a02` 也同样是拒绝接收。</span><br><span class="line">    // 注意: 调用这个函数的 msg.sender是ERC721的合约地址</span><br><span class="line">    // @param _operator ：调用 `safeTransferFrom` 函数的地址。</span><br><span class="line">    // @param _from ：之前的NFT拥有者</span><br><span class="line">    // @param _tokenId ： NFT token id</span><br><span class="line">    // @param _data ： 附加信息</span><br><span class="line">    // @return 正确处理时返回 `bytes4(keccak256(&quot;onERC721Received(address,address,uint256,bytes)&quot;))`</span><br><span class="line">    function onERC721Received(address _operator, address _from, uint256 _tokenId, bytes _data) external returns(bytes4);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="元数据接口"><a href="#元数据接口" class="headerlink" title="元数据接口"></a>元数据接口</h3><p>元数据包括一个名称和符号，就像它许多其他代币标准中一样（如ERC-20）。 此外，还可以为一个代币定义tokenURI ， 每个代币都应该有自己的URI。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">interface ERC721Metadata &#123;</span><br><span class="line">    // @notice NFTs 集合的名字</span><br><span class="line">    function name() external view returns (string _name);</span><br><span class="line"></span><br><span class="line">    // @notice NFTs 缩写代号</span><br><span class="line">    function symbol() external view returns (string _symbol);</span><br><span class="line"></span><br><span class="line">    // @notice 一个给定资产的唯一的统一资源标识符(URI)</span><br><span class="line">    // @dev 如果 `_tokenId` 无效，抛出异常. URIs在 RFC 3986 定义，</span><br><span class="line">    // URI 也许指向一个 符合 &quot;ERC721 元数据 JSON Schema&quot; 的 JSON 文件</span><br><span class="line">    function tokenURI(uint256 _tokenId) external view returns (string);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="枚举接口"><a href="#枚举接口" class="headerlink" title="枚举接口"></a>枚举接口</h3><p>枚举接口包含了按索引获取到对应的代币，可以提供NFTs的完整列表，以便NFT可被发现。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">interface ERC721Enumerable &#123;</span><br><span class="line">    // @notice  NFTs 计数</span><br><span class="line">    // @return  返回合约有效跟踪（所有者不为零地址）的 NFT数量</span><br><span class="line">    function totalSupply() external view returns (uint256);</span><br><span class="line"></span><br><span class="line">    // @notice 枚举索引NFT</span><br><span class="line">    // @dev 如果 `_index` &gt;= `totalSupply()` 则抛出异常</span><br><span class="line">    // @param _index 小于 `totalSupply()`的索引号</span><br><span class="line">    // @return 对应的token id（标准不指定排序方式)</span><br><span class="line">    function tokenByIndex(uint256 _index) external view returns (uint256);</span><br><span class="line"></span><br><span class="line">    // @notice 枚举索引某个所有者的 NFTs</span><br><span class="line">    // @dev  如果 `_index` &gt;= `balanceOf(_owner)` 或 `_owner` 是零地址，抛出异常</span><br><span class="line">    // @param _owner 查询的所有者地址</span><br><span class="line">    // @param _index 小于 `balanceOf(_owner)` 的索引号</span><br><span class="line">    // @return 对应的token id （标准不指定排序方式)</span><br><span class="line">    function tokenOfOwnerByIndex(address _owner, uint256 _index) external view returns (uint256);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://newive.github.io/2023/05/19/ERC721/" data-id="cli5d2ofp00030ohkfub95j7b" data-title="ERC721" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NFT/" rel="tag">NFT</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Smart-Contract/" rel="tag">Smart Contract</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Solidity/" rel="tag">Solidity</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/05/25/ERC721%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E6%A0%B7%E4%BE%8B/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          ERC721简易项目开发Demo
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/05/17/Solidity%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">Solidity智能合约基本概念</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ERC721/" rel="tag">ERC721</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFT/" rel="tag">NFT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Smart-Contract/" rel="tag">Smart Contract</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Solidity/" rel="tag">Solidity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alchemy/" rel="tag">alchemy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hardhat/" rel="tag">hardhat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openzeppelin/" rel="tag">openzeppelin</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/solidity/" rel="tag">solidity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web3js/" rel="tag">web3js</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/ERC721/" style="font-size: 10px;">ERC721</a> <a href="/tags/NFT/" style="font-size: 13.33px;">NFT</a> <a href="/tags/Smart-Contract/" style="font-size: 20px;">Smart Contract</a> <a href="/tags/Solidity/" style="font-size: 16.67px;">Solidity</a> <a href="/tags/alchemy/" style="font-size: 10px;">alchemy</a> <a href="/tags/hardhat/" style="font-size: 13.33px;">hardhat</a> <a href="/tags/openzeppelin/" style="font-size: 10px;">openzeppelin</a> <a href="/tags/solidity/" style="font-size: 13.33px;">solidity</a> <a href="/tags/web3js/" style="font-size: 10px;">web3js</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/05/">May 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/05/27/Openzeppelin%E7%AC%94%E8%AE%B0/">Openzeppelin笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/27/Hardhat%E7%AC%94%E8%AE%B0/">Hardhat笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/25/ERC721%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E6%A0%B7%E4%BE%8B/">ERC721简易项目开发Demo</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/19/ERC721/">ERC721</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/17/Solidity%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">Solidity智能合约基本概念</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 NeWive<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

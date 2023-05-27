@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Solidity面向对象 | NeWive&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="inheritance、virtual、override 合约之间存在继承关系，使用 is 如果父合约的方法想被子合约继承则需要使用关键字 virtual 如果子合约想要覆盖父合约的方法则需使用关键字 override 在子合约中如果想调用父合约的方法需要使用 super 继承遵循最远继承，即后面继承的合约会覆盖前面父合约的方法 super会调用继承链条上每一个合约的相关函数，而不仅仅是最近的父合">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Solidity面向对象">
+<meta property="og:url" content="https://newive.github.io/2023/05/17/Solidity%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/index.html">
+<meta property="og:site_name" content="NeWive&#39;s Blog">
+<meta property="og:description" content="inheritance、virtual、override 合约之间存在继承关系，使用 is 如果父合约的方法想被子合约继承则需要使用关键字 virtual 如果子合约想要覆盖父合约的方法则需使用关键字 override 在子合约中如果想调用父合约的方法需要使用 super 继承遵循最远继承，即后面继承的合约会覆盖前面父合约的方法 super会调用继承链条上每一个合约的相关函数，而不仅仅是最近的父合">
+<meta property="og:locale">
+<meta property="article:published_time" content="2023-05-17T02:01:02.000Z">
+<meta property="article:modified_time" content="2023-05-17T02:01:44.643Z">
+<meta property="article:author" content="NeWive">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="Smart Contract">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="NeWive's Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">NeWive&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">NeWive的鸽子窝</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Suche"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://newive.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Solidity面向对象" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/05/17/Solidity%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" class="article-date">
+  <time class="dt-published" datetime="2023-05-17T02:01:02.000Z" itemprop="datePublished">2023-05-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Solidity面向对象
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="inheritance、virtual、override"><a href="#inheritance、virtual、override" class="headerlink" title="inheritance、virtual、override"></a>inheritance、virtual、override</h2><ol>
+<li>合约之间存在继承关系，使用 <code>is</code></li>
+<li>如果父合约的方法想被子合约继承则需要使用关键字 <code>virtual</code></li>
+<li>如果子合约想要覆盖父合约的方法则需使用关键字 <code>override</code></li>
+<li>在子合约中如果想调用父合约的方法需要使用 <code>super</code></li>
+<li>继承遵循最远继承，即后面继承的合约会覆盖前面父合约的方法</li>
+<li>super会调用继承链条上每一个合约的相关函数，而不仅仅是最近的父合约。</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.10;</span><br><span class="line"></span><br><span class="line">/* Inheritance tree</span><br><span class="line">   A</span><br><span class="line"> /  \</span><br><span class="line">B   C</span><br><span class="line"> \ /</span><br><span class="line">  D</span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line">contract A &#123;</span><br><span class="line">	event Log(string message);</span><br><span class="line">	</span><br><span class="line">	function foo() public virtual &#123;</span><br><span class="line">		emit Log(&quot;A.foo called&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	function bar() public virtual &#123;</span><br><span class="line">		emit Log(&quot;A.bar called&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract B is A &#123;</span><br><span class="line">	function foo() public virtual override &#123;</span><br><span class="line">		emit Log(&quot;B.foo called&quot;);</span><br><span class="line">		A.foo();</span><br><span class="line">	&#125;</span><br><span class="line">	function bar() public virtual override &#123;</span><br><span class="line">		emit Log(&quot;B.bar called&quot;);</span><br><span class="line">		super.bar();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract C is A &#123;</span><br><span class="line">    function foo() public virtual override &#123;</span><br><span class="line">        emit Log(&quot;C.foo called&quot;);</span><br><span class="line">        A.foo();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function bar() public virtual override &#123;</span><br><span class="line">        emit Log(&quot;C.bar called&quot;);</span><br><span class="line">        super.bar();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract D is B, C &#123;</span><br><span class="line">    // Try:</span><br><span class="line">    // - Call D.foo and check the transaction logs.</span><br><span class="line">    //   Although D inherits A, B and C, it only called C and then A.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    function foo() public override(B, C) &#123;</span><br><span class="line">        super.foo();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">      // Try:</span><br><span class="line">    // - Call D.bar and check the transaction logs</span><br><span class="line">    //   D called C, then B, and finally A.</span><br><span class="line">    //   Although super was called twice (by B and C) it only called A once.</span><br><span class="line">    function bar() public override(B, C) &#123;</span><br><span class="line">        super.bar();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>D调用foo的时候，由于B，C中的foo都没有使用super，所以只是覆盖问题，根据最远继承，C 覆盖了B，所以执行顺序为：D -&gt; C -&gt; A；</li>
+<li>D调用bar的时候，由于B，C中的bar使用了super，此时D的两个parent都需要执行一遍，因此为D-&gt; C -&gt; B -&gt; A，整个过程中A合约只会被调用一次。具体原因是Solidity借鉴了Python的方式，强制一个由基类构成的DAG（有向无环图）使其保证一个特定的顺序。</li>
+</ol>
+<h2 id="继承的状态变量覆盖"><a href="#继承的状态变量覆盖" class="headerlink" title="继承的状态变量覆盖"></a>继承的状态变量覆盖</h2><ol>
+<li>状态变量无法进行重写，只能继承父类状态变量</li>
+<li>但是可以通过在子合约的构造函数中进行覆盖，从而达到重写目的</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.13;</span><br><span class="line"></span><br><span class="line">contract A &#123;</span><br><span class="line">    string public name = &quot;Contract A&quot;;</span><br><span class="line"></span><br><span class="line">    function getName() public view returns (string memory) &#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Shadowing is disallowed in Solidity 0.6</span><br><span class="line">// This will not compile</span><br><span class="line">// contract B is A &#123;</span><br><span class="line">//     string public name = &quot;Contract B&quot;;</span><br><span class="line">// &#125;</span><br><span class="line"></span><br><span class="line">contract C is A &#123;</span><br><span class="line">    // This is the correct way to override inherited state variables.</span><br><span class="line">    constructor() &#123;</span><br><span class="line">        name = &quot;Contract C&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // C.getName returns &quot;Contract C&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h2><p>在继承合约时如果父合约有构造函数则需要显示对父合约进行构造。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.13;</span><br><span class="line"></span><br><span class="line">contract X &#123;</span><br><span class="line">	string public name;</span><br><span class="line">	constructor(string memory _name) &#123;</span><br><span class="line">		name = _name;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract Y &#123;</span><br><span class="line">	string public text;</span><br><span class="line">	</span><br><span class="line">	constructor(string memory _name) &#123;</span><br><span class="line">		text = _name;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 第一种初始化方式</span><br><span class="line">contract B is X(&quot;Input to X&quot;), Y(&quot;Input to Y&quot;) &#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 构造顺序取决于继承顺序，从左到右，而不是实例化顺序</span><br><span class="line">// 第二种初始化方式</span><br><span class="line">contract D is X, Y &#123;</span><br><span class="line">	    constructor() X(&quot;X was called&quot;) Y(&quot;Y was called&quot;) &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>抽象合约的作用是将函数定义和具体实现分离，从而实现解耦、可拓展性，其使用规则为：</p>
+<ol>
+<li>当合约中有未实现的函数时，则合约必须修饰为abstract；</li>
+<li>当合约继承的base合约中有构造函数，但是当前合约并没有对其进行传参时，则必须修饰为abstract；</li>
+<li>abstract合约中未实现的函数必须在子合约中实现，即所有在abstract中定义的函数都必须有实现；</li>
+<li>abstract合约不能单独部署，必须被继承后才能部署；</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: GPL-3.0</span><br><span class="line">pragma solidity &gt;=0.6.0 &lt;0.9.0;</span><br><span class="line"></span><br><span class="line">abstract contract Animal &#123;</span><br><span class="line">    string public species;</span><br><span class="line">    constructor(string memory _base) &#123;</span><br><span class="line">        species = _base;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">abstract contract Feline &#123;</span><br><span class="line">    uint public num;</span><br><span class="line">    function utterance() public pure virtual returns (bytes32);</span><br><span class="line"></span><br><span class="line">    function base(uint _num) public returns(uint, string memory) &#123;</span><br><span class="line">        num = _num;</span><br><span class="line">        return (num, &quot;hello world!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 由于Animal中的构造函数没有进行初始化，所以必须修饰为abstract</span><br><span class="line">abstract contract Cat1 is Feline, Animal &#123;</span><br><span class="line">    function utterance() public pure override returns (bytes32) &#123; </span><br><span class="line">      return &quot;miaow&quot;; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract Cat2 is Feline, Animal(&quot;Animal&quot;) &#123;</span><br><span class="line">    function utterance() public pure override returns (bytes32) &#123; </span><br><span class="line">      return &quot;miaow&quot;; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Interface"><a href="#Interface" class="headerlink" title="Interface"></a>Interface</h2><p>可以使用Interface完成多个合约之间进行交互，interface有如下特性：</p>
+<ol>
+<li>接口中定义的function不能存在具体实现；</li>
+<li>接口可以继承；</li>
+<li>所有的function必须定义为external；</li>
+<li>接口中不能存在constructor函数；</li>
+<li><strong>接口中不能定义状态变量。</strong></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/upstate-interactive/solidity-how-to-know-when-to-use-abstract-contracts-vs-interfaces-874cab860c56">abstract和interface的区别</a></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.13;</span><br><span class="line"></span><br><span class="line">contract Counter &#123;</span><br><span class="line">    uint public count;</span><br><span class="line"></span><br><span class="line">    function increment() external &#123;</span><br><span class="line">        count += 1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface IBase &#123;</span><br><span class="line">    function count() external view returns (uint);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface ICounter is IBase &#123;</span><br><span class="line">    function increment() external;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract MyContract &#123;</span><br><span class="line">    function incrementCounter(address _counter) external &#123;</span><br><span class="line">        ICounter(_counter).increment();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function getCount(address _counter) external view returns (uint) &#123;</span><br><span class="line">        return ICounter(_counter).count();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">uniswap demo:</span><br><span class="line"></span><br><span class="line">// Uniswap example</span><br><span class="line">interface UniswapV2Factory &#123;</span><br><span class="line">    function getPair(address tokenA, address tokenB)</span><br><span class="line">        external</span><br><span class="line">        view</span><br><span class="line">        returns (address pair);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface UniswapV2Pair &#123;</span><br><span class="line">    function getReserves()</span><br><span class="line">        external</span><br><span class="line">        view</span><br><span class="line">        returns (</span><br><span class="line">            uint112 reserve0,</span><br><span class="line">            uint112 reserve1,</span><br><span class="line">            uint32 blockTimestampLast</span><br><span class="line">        );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract UniswapExample &#123;</span><br><span class="line">    address private factory = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;</span><br><span class="line">    address private dai = 0x6B175474E89094C44Da98b954EedeAC495271d0F;</span><br><span class="line">    address private weth = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;</span><br><span class="line"></span><br><span class="line">    function getTokenReserves() external view returns (uint, uint) &#123;</span><br><span class="line">        address pair = UniswapV2Factory(factory).getPair(dai, weth);</span><br><span class="line">        (uint reserve0, uint reserve1, ) = UniswapV2Pair(pair).getReserves();</span><br><span class="line">        return (reserve0, reserve1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://newive.github.io/2023/05/17/Solidity%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" data-id="cli5d2og100140ohk00x66jge" data-title="Solidity面向对象" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Smart-Contract/" rel="tag">Smart Contract</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Solidity/" rel="tag">Solidity</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/05/17/Solidity%E5%90%88%E7%BA%A6%E5%AE%89%E5%85%A8/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          Solidity合约安全
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/05/17/Solidity%E4%BA%8B%E4%BB%B6/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">Solidity事件</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ERC721/" rel="tag">ERC721</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFT/" rel="tag">NFT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Smart-Contract/" rel="tag">Smart Contract</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Solidity/" rel="tag">Solidity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alchemy/" rel="tag">alchemy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hardhat/" rel="tag">hardhat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openzeppelin/" rel="tag">openzeppelin</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/solidity/" rel="tag">solidity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web3js/" rel="tag">web3js</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/ERC721/" style="font-size: 10px;">ERC721</a> <a href="/tags/NFT/" style="font-size: 13.33px;">NFT</a> <a href="/tags/Smart-Contract/" style="font-size: 20px;">Smart Contract</a> <a href="/tags/Solidity/" style="font-size: 16.67px;">Solidity</a> <a href="/tags/alchemy/" style="font-size: 10px;">alchemy</a> <a href="/tags/hardhat/" style="font-size: 13.33px;">hardhat</a> <a href="/tags/openzeppelin/" style="font-size: 10px;">openzeppelin</a> <a href="/tags/solidity/" style="font-size: 13.33px;">solidity</a> <a href="/tags/web3js/" style="font-size: 10px;">web3js</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/05/">May 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/05/27/Openzeppelin%E7%AC%94%E8%AE%B0/">Openzeppelin笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/27/Hardhat%E7%AC%94%E8%AE%B0/">Hardhat笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/25/ERC721%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E6%A0%B7%E4%BE%8B/">ERC721简易项目开发Demo</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/19/ERC721/">ERC721</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/17/Solidity%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">Solidity智能合约基本概念</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 NeWive<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

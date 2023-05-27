@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Solidity变量类型与全局变量 | NeWive&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Solidity是静态变量语言。undefined或null的概念不存在于Solidity中。同时所有初始未进行赋值的变量都有默认值0。处理异常时最好使用revert来回滚整个交易或返回一个bool类型进行说明。 变量的可见性和可修改性可见性(具体解释详见函数的可见性) public private internal  可修改性 constant: 必须有默认值 immutable: 不必有默认值">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Solidity变量类型与全局变量">
+<meta property="og:url" content="https://newive.github.io/2023/05/16/Solidity%E5%8F%98%E9%87%8F%E7%B1%BB%E5%9E%8B/index.html">
+<meta property="og:site_name" content="NeWive&#39;s Blog">
+<meta property="og:description" content="Solidity是静态变量语言。undefined或null的概念不存在于Solidity中。同时所有初始未进行赋值的变量都有默认值0。处理异常时最好使用revert来回滚整个交易或返回一个bool类型进行说明。 变量的可见性和可修改性可见性(具体解释详见函数的可见性) public private internal  可修改性 constant: 必须有默认值 immutable: 不必有默认值">
+<meta property="og:locale">
+<meta property="article:published_time" content="2023-05-16T06:51:06.000Z">
+<meta property="article:modified_time" content="2023-05-17T01:56:25.709Z">
+<meta property="article:author" content="NeWive">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="Smart Contract">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="NeWive's Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">NeWive&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">NeWive的鸽子窝</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Suche"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://newive.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Solidity变量类型" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/05/16/Solidity%E5%8F%98%E9%87%8F%E7%B1%BB%E5%9E%8B/" class="article-date">
+  <time class="dt-published" datetime="2023-05-16T06:51:06.000Z" itemprop="datePublished">2023-05-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Solidity变量类型与全局变量
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>Solidity是静态变量语言。<code>undefined</code>或<code>null</code>的概念不存在于Solidity中。<br>同时所有初始未进行赋值的变量都有默认值0。<br>处理异常时最好使用<code>revert</code>来回滚整个交易或返回一个<code>bool</code>类型进行说明。</p>
+<h2 id="变量的可见性和可修改性"><a href="#变量的可见性和可修改性" class="headerlink" title="变量的可见性和可修改性"></a>变量的可见性和可修改性</h2><h3 id="可见性-具体解释详见函数的可见性"><a href="#可见性-具体解释详见函数的可见性" class="headerlink" title="可见性(具体解释详见函数的可见性)"></a>可见性(具体解释详见函数的可见性)</h3><ul>
+<li><code>public</code></li>
+<li><code>private</code></li>
+<li><code>internal</code></li>
+</ul>
+<h3 id="可修改性"><a href="#可修改性" class="headerlink" title="可修改性"></a>可修改性</h3><ul>
+<li><code>constant</code>: 必须有默认值</li>
+<li><code>immutable</code>: 不必有默认值但只能在构造函数里初始化</li>
+</ul>
+<h2 id="基本类型"><a href="#基本类型" class="headerlink" title="基本类型"></a>基本类型</h2><ul>
+<li><p><code>bool</code></p>
+</li>
+<li><p><code>int</code> &#x2F; <code>uint</code>: 类型从<code>uint8</code>以8位为一步增长到<code>uint256</code>，不加位数的<code>int</code>或<code>uint</code>默认为256位</p>
+<ul>
+<li>使用<code>type(X).max</code>和<code>type(X).min</code>获取极值，其中X为变量类型。</li>
+<li>默认情况下如果数学计算的结果发生了溢出则会通过失败断言的方式进行回滚。</li>
+</ul>
+</li>
+<li><p><code>address</code>: 保存一个长度为20字节的值，等同于以太坊地址的长度</p>
+</li>
+<li><p><code>address payable</code>: 相比于<code>address</code>增加了<code>transfer</code>与<code>send</code>两个成员函数，代表该地址是一个可以发送以太币的地址。</p>
+<ul>
+<li><code>address payable</code>可以隐式转换为<code>address</code>，反之则不行，需要使用<code>payable(&lt;address&gt;)</code>进行转换。</li>
+</ul>
+</li>
+</ul>
+<h3 id="address类型的成员函数与变量"><a href="#address类型的成员函数与变量" class="headerlink" title="address类型的成员函数与变量"></a><code>address</code>类型的成员函数与变量</h3><ul>
+<li><code>.balance</code>: <code>uint256</code>, 单位为Wei</li>
+<li><code>.transfer(uint256 amount)</code>: <code>address payable</code>的成员函数，交易失败会回滚</li>
+<li><code>.send(uint256 amount) returns (bool)</code>: 同上，但失败会返回false，不会回滚</li>
+<li><code>.call(bytes memory) returns (bool, bytes memory)</code>: 底层调用，一般用于调用外部函数，参数为函数的signature，<em>使用时必须要检查是否成功</em></li>
+<li><code>.delegatecall(bytes memory) returns (bool, bytes memory)</code>: 同上</li>
+<li><code>.staticcall(bytes memory) returns (bool, bytes memory)</code>: 同上</li>
+</ul>
+<p>使用call时会绕过类型检查、函数存在性检查和参数打包，所以应该尽可能避免使用。<br>send函数具有潜在的风险，如果交易的调用栈深度超过1024时或gas消耗完毕时会失败。所以尽可能使用transfer或检查send的执行结果。<br>如果调用的帐户不存在，作为 EVM 设计的一部分，低级函数 call、delegatecall 和 staticcall 将返回 true 作为它们的第一个返回值。如果需要，必须在调用之前检查帐户是否存在。</p>
+<h2 id="合约类型"><a href="#合约类型" class="headerlink" title="合约类型"></a>合约类型</h2><p>合约类型可以隐式转换成它们继承的类型，可以被显式转换成地址类型，也可以从地址类型显式转换成合约类型。<br>其中与<code>address payable</code>的转换只能通过<code>payable(address(x))</code>的方式实现，x为某一个合约的实例。</p>
+<h3 id="通过new创建合约"><a href="#通过new创建合约" class="headerlink" title="通过new创建合约"></a>通过new创建合约</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity &gt;=0.7.0 &lt;0.9.0;</span><br><span class="line">contract D &#123;</span><br><span class="line">    uint public x;</span><br><span class="line">    constructor(uint a) payable &#123;</span><br><span class="line">        x = a;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract C &#123;</span><br><span class="line">    D d = new D(4); // will be executed as part of C&#x27;s constructor</span><br><span class="line"></span><br><span class="line">    function createD(uint arg) public &#123;</span><br><span class="line">        D newD = new D(arg);</span><br><span class="line">        newD.x();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function createAndEndowD(uint arg, uint amount) public payable &#123;</span><br><span class="line">        // Send ether along with the creation</span><br><span class="line">        D newD = new D&#123;value: amount&#125;(arg);</span><br><span class="line">        newD.x();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="枚举类型"><a href="#枚举类型" class="headerlink" title="枚举类型"></a>枚举类型</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">//SPDX-License-Identifier: GPL-3.0</span><br><span class="line">pragma solidity &gt;=0.8.0;</span><br><span class="line"></span><br><span class="line">contract Enum &#123;</span><br><span class="line">    enum ActionChoices &#123;l, r, s&#125;;</span><br><span class="line">    ActionChoices choice;</span><br><span class="line">    ActionChoices constant defaultChoice = ActionChoices.l;</span><br><span class="line"></span><br><span class="line">    function setGoStraight() public &#123;</span><br><span class="line">        choice = ActionChoices.GoStraight;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function getChoice() public view returns (ActionChoices) &#123;</span><br><span class="line">        return choice;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 与uint转化需显式</span><br><span class="line">    function getDefaultChoice() public pure returns (uint) &#123;</span><br><span class="line">        return uint(defaultChoice);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 获取极值</span><br><span class="line">    function getLargestValue() public pure returns (ActionChoices) &#123;</span><br><span class="line">        return type(ActionChoices).max;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function getSmallestValue() public pure returns (ActionChoices) &#123;</span><br><span class="line">        return type(ActionChoices).min;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="函数类型"><a href="#函数类型" class="headerlink" title="函数类型"></a>函数类型</h2><h3 id="函数类型的修饰符"><a href="#函数类型的修饰符" class="headerlink" title="函数类型的修饰符"></a>函数类型的修饰符</h3><h4 id="可见性"><a href="#可见性" class="headerlink" title="可见性"></a>可见性</h4><ul>
+<li><code>public</code>: 表示在任何情况下都可以访问</li>
+<li><code>private</code>: 只有当前类可以访问，子类无法访问，外部无法访问</li>
+<li><code>internal</code>: 当前类及其子类可以访问，外部无法访问</li>
+<li><code>external</code>: 只有外部可以访问</li>
+</ul>
+<p>默认情况下函数类型是<code>internal</code>，可以省略。</p>
+<p><code>public</code>与<code>external</code>函数具有以下成员变量</p>
+<ul>
+<li><code>address</code>: 函数的地址</li>
+<li><code>selector</code>: 返回ABI function selector，表示一个函数的特征。</li>
+</ul>
+<h4 id="状态的修改性"><a href="#状态的修改性" class="headerlink" title="状态的修改性"></a>状态的修改性</h4><p>主要用于约束开发的规范性（个人感觉）。</p>
+<ul>
+<li><code>pure</code>: 不涉及状态变量的函数</li>
+<li><code>view</code>: 函数的逻辑中只有对状态变量的读取，没有对状态变量的修改</li>
+<li><code>payable</code>: 涉及以太币交易的函数</li>
+</ul>
+<p>函数A到B之间的隐式转换只有在参数、返回值等完全相同且A的状态可变性比B的更严格的条件下才被允许。</p>
+<ul>
+<li><code>pure</code>可以被转化为<code>view</code>和<code>non-payable</code></li>
+<li><code>view</code>可以被转化为<code>non-payable</code></li>
+<li><code>payable</code>可以被转化为<code>non-payable</code></li>
+</ul>
+<p>另外<code>non-payable</code>的函数会拒绝发送给它的以太币，同时拒绝以太币比不拒绝以太币更具有限制性所以可以用一个<code>payable</code>函数覆盖<code>non-payable</code>函数。</p>
+<p>带有<code>calldata</code>类型参数的<code>external</code>函数不能被带有<code>calldata</code>类型参数的函数类型所兼容。例如<code>function (string calldata) external</code>类型不能指向任何函数，而<code>function (string memory) external</code>可以同时指向<code>function f(string memory) external &#123;&#125;</code>和<code>function g(string calldata) external &#123;&#125;</code>。这是因为对于这两个位置，参数以相同的方式传递给函数。调用者不能直接将它的calldata传递给一个外部函数。</p>
+<h3 id="函数调用"><a href="#函数调用" class="headerlink" title="函数调用"></a>函数调用</h3><p><code>this</code>在构造函数中不可以被使用。<br>当调用函数时可以写明Wei的数量和调用发送的gas，<code>&#123;value: 10, gas: 1000&#125;</code>。<em>但是不建议写明gas值</em>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: GPL-3.0</span><br><span class="line">pragma solidity &gt;=0.6.2 &lt;0.9.0;</span><br><span class="line"></span><br><span class="line">contract InfoFeed &#123;</span><br><span class="line">    function info() public payable returns (uint ret) &#123; return 42; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract Consumer &#123;</span><br><span class="line">    InfoFeed feed;</span><br><span class="line">    function setFeed(InfoFeed addr) public &#123; feed = addr; &#125;</span><br><span class="line">    function callFeed() public &#123; feed.info&#123;value: 10, gas: 800&#125;(); &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同时函数调用的参数可以根据变量名指明。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: GPL-3.0</span><br><span class="line">pragma solidity &gt;=0.4.0 &lt;0.9.0;</span><br><span class="line"></span><br><span class="line">contract C &#123;</span><br><span class="line">    mapping(uint =&gt; uint) data;</span><br><span class="line"></span><br><span class="line">    function f() public &#123;</span><br><span class="line">        set(&#123;value: 2, key: 3&#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function set(uint key, uint value) public &#123;</span><br><span class="line">        data[key] = value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="解构赋值"><a href="#解构赋值" class="headerlink" title="解构赋值"></a>解构赋值</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: GPL-3.0</span><br><span class="line">pragma solidity &gt;=0.5.0 &lt;0.9.0;</span><br><span class="line"></span><br><span class="line">contract C &#123;</span><br><span class="line">    uint index;</span><br><span class="line"></span><br><span class="line">    function f() public pure returns (uint, bool, uint) &#123;</span><br><span class="line">        return (7, true, 2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function g() public &#123;</span><br><span class="line">        // 用类型声明并从返回的元组分配的变量</span><br><span class="line">        // 不必指定所有元素（但数量必须匹配）</span><br><span class="line">        (uint x, , uint y) = f();</span><br><span class="line">        // 交换值的常用技巧——不适用于非值存储类型。</span><br><span class="line">        (x, y) = (y, x);</span><br><span class="line">        // 可以省略</span><br><span class="line">        (index, , ) = f(); // Sets the index to 7</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="引用类型"><a href="#引用类型" class="headerlink" title="引用类型"></a>引用类型</h2><p>引用类型包括数组、结构体和映射。当使用引用类型时需要显式写明数据位置。</p>
+<h3 id="数据位置"><a href="#数据位置" class="headerlink" title="数据位置"></a>数据位置</h3><ul>
+<li><code>memory</code>: 作用域在一个函数调用内部</li>
+<li><code>storage</code>: 永久存储在区块链中，开销较大</li>
+<li><code>calldata</code>: 包含函数参数的特殊位置，且是只读的</li>
+</ul>
+<p>更改数据位置的赋值或类型转换将始终引发深拷贝，而同一数据位置内的赋值在某些情况下仅进行浅拷贝。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity &gt;=0.8.0;</span><br><span class="line"></span><br><span class="line">contract C &#123;</span><br><span class="line">    uint[] x;</span><br><span class="line"></span><br><span class="line">    function f(uint[] memory memoryArr) public &#123;</span><br><span class="line">        // 深拷贝</span><br><span class="line">        x = memoryArray;</span><br><span class="line">        // 浅拷贝</span><br><span class="line">        uint[] storage y = x;</span><br><span class="line">        // 返回第八个元素</span><br><span class="line">        y[7];</span><br><span class="line">        // 通过y修改x</span><br><span class="line">        y.pop();</span><br><span class="line">        // 传递一个引用</span><br><span class="line">        g(x);</span><br><span class="line">        // 深拷贝</span><br><span class="line">        h(x);</span><br><span class="line">    &#125;</span><br><span class="line">    function g(uint[] storage) internal pure &#123;&#125;</span><br><span class="line">    function h(uint[] memory) public pure &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><p>数组类型的长度可以是动态的，也可以是编译时定长的。<br>Solidity对多维数组的解释方式与其他语言有些不同，例如<code>uint[][5]</code>表示一个有5个动态长度数组的数组。</p>
+<h4 id="定长字节数组"><a href="#定长字节数组" class="headerlink" title="定长字节数组"></a>定长字节数组</h4><p><code>bytes1</code>到<code>bytes32</code>表示从长度为1到长度为32的一段字节。成员变量为<code>length</code>。</p>
+<h4 id="动态长度数组"><a href="#动态长度数组" class="headerlink" title="动态长度数组"></a>动态长度数组</h4><ul>
+<li><code>bytes</code>: 动态长度的字节数组。</li>
+<li><code>string</code>: 动态长度的UTF-8编码的字符串。</li>
+</ul>
+<p>字符串可以隐式转化成<code>bytes</code>，例如<code>bytes32 samevar = &quot;stringliteral&quot;</code>，字符串被解释为原始的字节并赋值给<code>samevar</code>。</p>
+<p>可以通过使用keccak256比较两端字符串<code>keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2))</code>。<br>拼接字符串可以使用<code>string.concat(s1, s2)</code>。如果调用不带参数的<code>string.concat</code>或<code>bytes.concat</code>，它们将返回一个空数组。</p>
+<p>数组的基本类型是列表中第一个表达式的类型，这样所有其他表达式都可以隐式转换为它。如果这不可能，则为类型错误。例如下面的例子中，<code>[1,2,3]</code>是<code>uint8[] memory</code>。如果想要<code>uint[] memory</code>则需要对第一个元素进行类型转化。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: GPL-3.0</span><br><span class="line">pragma solidity &gt;=0.4.16 &lt;0.9.0;</span><br><span class="line"></span><br><span class="line">contract C &#123;</span><br><span class="line">    function f() public pure &#123;</span><br><span class="line">        g([uint(1), 2, 3]);</span><br><span class="line">    &#125;</span><br><span class="line">    function g(uint[3] memory) public pure &#123;</span><br><span class="line">        // ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>定长数组不能被复制到动态长度的数组。如果要初始化动态大小的数组，则必须分配各个元素。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: GPL-3.0</span><br><span class="line">pragma solidity &gt;=0.4.16 &lt;0.9.0;</span><br><span class="line"></span><br><span class="line">contract C &#123;</span><br><span class="line">    function f() public pure &#123;</span><br><span class="line">        uint[] memory x = new uint[](3);</span><br><span class="line">        x[0] = 1;</span><br><span class="line">        x[1] = 3;</span><br><span class="line">        x[2] = 4;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="数组的成员"><a href="#数组的成员" class="headerlink" title="数组的成员"></a>数组的成员</h4><ul>
+<li><code>length</code></li>
+<li><code>push()</code>: 例子：<code>x.push().t = 2</code> 或 <code>x.push() = 2</code></li>
+<li><code>push(x)</code></li>
+<li><code>pop()</code>: 注意<code>pop</code>的gas开销依据要移除的元素的大小决定，如果要移除的元素是一个数组则开销较大。</li>
+</ul>
+<h4 id="storage类型数组的空引用"><a href="#storage类型数组的空引用" class="headerlink" title="storage类型数组的空引用"></a><code>storage</code>类型数组的空引用</h4><p>当对数组元素的引用存储在局部变量中，然后将之pop出之后，会出现空引用的情况。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: GPL-3.0</span><br><span class="line">pragma solidity &gt;=0.8.0 &lt;0.9.0;</span><br><span class="line"></span><br><span class="line">contract C &#123;</span><br><span class="line">    uint[][] s;</span><br><span class="line"></span><br><span class="line">    function f() public &#123;</span><br><span class="line">        // 存储s的最后一个元素</span><br><span class="line">        uint[] storage ptr = s[s.length - 1];</span><br><span class="line">        // 移除s的最后一个元素</span><br><span class="line">        s.pop();</span><br><span class="line">        // 向不存在的数组写入数据</span><br><span class="line">        ptr.push(0x42);</span><br><span class="line">        // 向s中添加一个新元素不会添加一个新的空数组元素而是一个长度为1，元素为0x42的数组</span><br><span class="line">        s.push();</span><br><span class="line">        assert(s[s.length - 1][0] == 0x42);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="结构体"><a href="#结构体" class="headerlink" title="结构体"></a>结构体</h3><p>传递结构体参数时需要用方括号包裹，且如果有地址时地址需要使用双引号包裹。<br>如果传递结构体数组时需要在外层再次用方括号包裹。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">enum TokenType &#123;</span><br><span class="line">    ERC20,</span><br><span class="line">    ERC721,</span><br><span class="line">    ERC1155</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">struct Token &#123;</span><br><span class="line">    TokenType tokenType;</span><br><span class="line">    address tokenAddr;</span><br><span class="line">    uint256 tokenAmounts;</span><br><span class="line">    uint256 tokenId;</span><br><span class="line">    uint256 tokenPrice;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">struct GeneralInfo &#123;</span><br><span class="line">    address loanToken; //token to borrow</span><br><span class="line">    uint256 ltv; //8000 means 80%</span><br><span class="line">    bool featuredFlag; //true, false</span><br><span class="line">    uint256 loanAmount; //amounts to borrow</span><br><span class="line">    uint256 interestRate; //1100 means 11%</span><br><span class="line">    uint256 collateralThreshold; //8000 means 80%</span><br><span class="line">    uint256 repaymentDate; //timestamp + 30days</span><br><span class="line">    uint256 offerAvailable; //timestamp + 7days</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>正确的传参方式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tokens:     [[0, &#x27;0x749B1c911170A5aFEb68d4B278cD5405C718fc7F&#x27;,1000,0,0]],</span><br><span class="line">general: [&quot;0x749B1c911170A5aFEb68d4B278cD5405C718fc7F&quot;, 8000, false, 1000, 1100, 8000, 10000, 10000]</span><br></pre></td></tr></table></figure>
+
+<p>一个结构体应用的例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: GPL-3.0</span><br><span class="line">pragma solidity &gt;=0.6.0 &lt;0.9.0;</span><br><span class="line"></span><br><span class="line">struct Funder &#123;</span><br><span class="line">    address addr;</span><br><span class="line">    uint amount;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract CrowdFunding &#123;</span><br><span class="line">    struct Campaign &#123;</span><br><span class="line">        address payable beneficiary;</span><br><span class="line">        uint fundingGoal;</span><br><span class="line">        uint numFunders;</span><br><span class="line">        uint amount;</span><br><span class="line">        mapping(uint =&gt; Funder) funders;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    uint numCampaigns;</span><br><span class="line">    mapping(uint =&gt; Campaign) campaigns;</span><br><span class="line"></span><br><span class="line">    function newCampaign(address payable beneficiary, uint goal) public returns (uint campaignID) &#123;</span><br><span class="line">        campaignID = numCampaigns++; </span><br><span class="line">        Campaign storage c = campaigns[campaignID];</span><br><span class="line">        c.beneficiary = beneficiary;</span><br><span class="line">        c.fundingGoal = goal;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function contribute(uint campaignID) public payable &#123;</span><br><span class="line">        Campaign storage c = campaigns[campaignID];</span><br><span class="line">        c.funders[c.numFunders++] = Funder(&#123;addr: msg.sender, amount: msg.value&#125;);</span><br><span class="line">        c.amount += msg.value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function checkGoalReached(uint campaignID) public returns (bool reached) &#123;</span><br><span class="line">        Campaign storage c = campaigns[campaignID];</span><br><span class="line">        if (c.amount &lt; c.fundingGoal)</span><br><span class="line">            return false;</span><br><span class="line">        uint amount = c.amount;</span><br><span class="line">        c.amount = 0;</span><br><span class="line">        c.beneficiary.transfer(amount);</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结构不可能包含其自身类型的成员，但是可以包含自身类型的动态长度数组。</p>
+<h2 id="映射类型"><a href="#映射类型" class="headerlink" title="映射类型"></a>映射类型</h2><p>映射类型的基本结构是<code>mapping(KeyType KeytName? =&gt; ValueType ValueName?)</code>。结构体、映射类型、数组不可以用作key。<br>映射类型的key不被保存在映射中，只有它的keccak256的hash值被保存。因此映射不存在长度或者键或值的集合的概念。<br>映射类型只能为<code>storage</code>类型，不可以被用作public类型的合约函数的返回值或参数，但是可以用作library的函数参数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity &gt;=0.8.0 &lt;0.9.0;</span><br><span class="line"></span><br><span class="line">contract MappingExample &#123;</span><br><span class="line">    mapping(address =&gt; uint) public balances;</span><br><span class="line"></span><br><span class="line">    function update(uint newBalance) public &#123;</span><br><span class="line">        balances[msg.sender] = newBalance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract MappingUser &#123;</span><br><span class="line">    function f() public returns (uint) &#123;</span><br><span class="line">        MappingExample m = new MappingExample();</span><br><span class="line">        m.update(100);</span><br><span class="line">        return m.balances(address(this));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="全局变量"><a href="#全局变量" class="headerlink" title="全局变量"></a>全局变量</h2><p>只记录比较常用的全局变量。</p>
+<h3 id="block-相关"><a href="#block-相关" class="headerlink" title="block 相关"></a><code>block</code> 相关</h3><ul>
+<li><code>blockhash(uint blockNumber) returns (bytes32)</code>: 既定块的哈希值</li>
+<li><code>block.coinbas</code>L: <code>address payable</code>，当前矿工的地址。</li>
+<li><code>block.gaslimit</code>: 当前块的gas限制</li>
+<li><code>block.timestamp</code>: <code>uint</code>，当前块的时间戳。</li>
+<li><code>gasleft() returns (uint256)</code>: 剩余的gas</li>
+</ul>
+<h3 id="msg-相关"><a href="#msg-相关" class="headerlink" title="msg 相关"></a><code>msg</code> 相关</h3><ul>
+<li><code>msg.data</code>: <code>bytes calldata</code>，完整的calldata</li>
+<li><code>msg.sender</code>: <code>address</code>，消息的发送方</li>
+<li><code>msg.sig</code>: <code>bytes4</code>，calldata的前四个字节，例如函数的标识</li>
+<li><code>msg.value</code>: 随消息发送的以太币，单位为wei</li>
+</ul>
+<p>msg 的所有成员的值，包括 msg.sender 和 msg.value 可以在每次外部函数调用时改变。</p>
+<h3 id="tx-相关"><a href="#tx-相关" class="headerlink" title="tx 相关"></a><code>tx</code> 相关</h3><ul>
+<li><code>tx.origin</code>: <code>address</code>，交易的发送者。</li>
+</ul>
+<h3 id="ABI的编码解码函数"><a href="#ABI的编码解码函数" class="headerlink" title="ABI的编码解码函数"></a><code>ABI</code>的编码解码函数</h3><ul>
+<li><code>abi.decode(bytes memory encodeData, (...)) returns (...)</code>: 解码数据，第二个参数用于设定解码的数据的数据类型。例如<code>(uint a, uint[2] memory b, bytes memory c) = abi.decode(data, (uint, uint[2], bytes))</code></li>
+<li><code>abi.encode(...) returns (bytes memory)</code>: ABI-encode</li>
+<li><code>abi.encodePacked(...) returns (bytes memory)</code></li>
+<li><code>abi.encodeWithSelector(bytes4 selector, ...) returns (bytes memory)</code></li>
+<li><code>abi.encodeWithSignature(string memory signature, ...) returns (bytes memory)</code>: 等价于<code>abi.encodeWithSelector(bytes4(keccak256(bytes(signature))), ...)</code></li>
+<li><code>abi.encodeCall(function functionPointer, (...)) returns (bytes memory)</code>: 用于外部合约的函数调用</li>
+</ul>
+<h3 id="错误处理相关"><a href="#错误处理相关" class="headerlink" title="错误处理相关"></a>错误处理相关</h3><ul>
+<li><code>assert(boo condition)</code>: 用于处理内部错误，不满足会回滚</li>
+<li><code>require(bool condition, string memory message?)</code>: 用于处理输入或外部组件错误，不满足会回滚，消耗的gas不回退，剩余的gas退回</li>
+<li>revert(string memory reason?): 触发回滚，用于比较复杂的校验情况</li>
+<li>revert Error(…): 可以节约gas，错误消息的长度会影响gas消耗数量</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: GPL-3.0</span><br><span class="line">pragma solidity ^0.8.4;</span><br><span class="line"></span><br><span class="line">contract VendingMachine &#123;</span><br><span class="line">    address owner;</span><br><span class="line">    error Unauthorized();</span><br><span class="line">    // error可以加参数</span><br><span class="line">    error InsufficientFund(uint balance, uint withdrawAmount);</span><br><span class="line">    function buy(uint amount) public payable &#123;</span><br><span class="line">        if (amount &gt; msg.value / 2 ether)</span><br><span class="line">            revert(&quot;Not enough Ether provided.&quot;);</span><br><span class="line">        // Alternative way to do it:</span><br><span class="line">        require(</span><br><span class="line">            amount &lt;= msg.value / 2 ether,</span><br><span class="line">            &quot;Not enough Ether provided.&quot;</span><br><span class="line">        );</span><br><span class="line">        // Perform the purchase.</span><br><span class="line">    &#125;</span><br><span class="line">    function withdraw() public &#123;</span><br><span class="line">        if (msg.sender != owner)</span><br><span class="line">            revert Unauthorized();</span><br><span class="line">        // 带参数error</span><br><span class="line">        revert InsufficientFund(&#123;balance: bal, withdrawAmount: _withdrawAmount&#125;);</span><br><span class="line"></span><br><span class="line">        payable(msg.sender).transfer(address(this).balance);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="哈希"><a href="#哈希" class="headerlink" title="哈希"></a>哈希</h3><ul>
+<li><code>keccak256(bytes memory) returns (bytes32)</code></li>
+</ul>
+<h3 id="合约相关"><a href="#合约相关" class="headerlink" title="合约相关"></a>合约相关</h3><ul>
+<li><code>this</code>: 当前合约，可以显式地转化成<code>address</code></li>
+<li><code>super</code>: 合约的父合约</li>
+</ul>
+<h2 id="delete操作符"><a href="#delete操作符" class="headerlink" title="delete操作符"></a>delete操作符</h2><ul>
+<li>delete操作符可以用于将除map外的任何变量置为默认值</li>
+<li>如果对动态数组使用delete则删除所有元素并置长度为0</li>
+<li>如果对静态数组使用delete则重置所有索引值，数组长度不变</li>
+<li>如果对map类型中的一个键使用delete，则会删除与该键相关的值</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://newive.github.io/2023/05/16/Solidity%E5%8F%98%E9%87%8F%E7%B1%BB%E5%9E%8B/" data-id="cli5d2ofz000z0ohkhzj73gln" data-title="Solidity变量类型与全局变量" class="article-share-link"><span class="fa fa-share">Teilen</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Smart-Contract/" rel="tag">Smart Contract</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Solidity/" rel="tag">Solidity</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/05/16/Solidity%E5%87%BD%E6%95%B0/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Neuer</strong>
+      <div class="article-nav-title">
+        
+          Solidity函数
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/05/16/Solidity%E5%90%88%E7%BA%A6%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Älter</strong>
+      <div class="article-nav-title">Solidity合约的基本结构</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ERC721/" rel="tag">ERC721</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFT/" rel="tag">NFT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Smart-Contract/" rel="tag">Smart Contract</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Solidity/" rel="tag">Solidity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alchemy/" rel="tag">alchemy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hardhat/" rel="tag">hardhat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openzeppelin/" rel="tag">openzeppelin</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/solidity/" rel="tag">solidity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web3js/" rel="tag">web3js</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/ERC721/" style="font-size: 10px;">ERC721</a> <a href="/tags/NFT/" style="font-size: 13.33px;">NFT</a> <a href="/tags/Smart-Contract/" style="font-size: 20px;">Smart Contract</a> <a href="/tags/Solidity/" style="font-size: 16.67px;">Solidity</a> <a href="/tags/alchemy/" style="font-size: 10px;">alchemy</a> <a href="/tags/hardhat/" style="font-size: 13.33px;">hardhat</a> <a href="/tags/openzeppelin/" style="font-size: 10px;">openzeppelin</a> <a href="/tags/solidity/" style="font-size: 13.33px;">solidity</a> <a href="/tags/web3js/" style="font-size: 10px;">web3js</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archiv</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/05/">May 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">letzter Beitrag</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/05/27/Openzeppelin%E7%AC%94%E8%AE%B0/">Openzeppelin笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/27/Hardhat%E7%AC%94%E8%AE%B0/">Hardhat笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/25/ERC721%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E6%A0%B7%E4%BE%8B/">ERC721简易项目开发Demo</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/19/ERC721/">ERC721</a>
+          </li>
+        
+          <li>
+            <a href="/2023/05/17/Solidity%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/">Solidity智能合约基本概念</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 NeWive<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
